@@ -43,11 +43,13 @@ NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
 
 // 定义一个字符串数组，用于存储要在视图中显示的光标列的名称。
 // 初始化为标题列和时间戳。
+
 String[] dataColumns =
 { NotePad.Notes.COLUMN_NAME_TITLE,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE } ;
 
 
 --格式化日期：从 Cursor 中获取长整型的修改时间，使用 SimpleDateFormat 将时间格式化为 "yyyy-MM-dd HH:mm" 格式，将格式化后的时间字符串设置到对应的 TextView 上
+
 adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -108,6 +110,7 @@ OnEditorActionListener，当用户在搜索框中按下回车键时触发，如�
 使用一个 SimpleCursorAdapter 来将数据绑定到 ListView 的每一项
 
 具体实现代码如下：
+
 public class SearchActivity extends Activity {
 
     private static final String[] PROJECTION = new String[]{
@@ -229,10 +232,12 @@ public class SearchActivity extends Activity {
     创建一个新的 Intent 对象，使用liveFolderIntent.setData(NotePad.Notes.LIVE_FOLDER_URI)设置了一个数据 URI，指向内容提供者支持的文件夹
 
     //先从资源文件中获取实时文件夹的名称，将这个名称作为附加字符串添加到 liveFolderIntent 中
+    
     String foldername = getString(R.string.live_folder_name);
     liveFolderIntent.putExtra(LiveFolders.EXTRA_LIVE_FOLDER_NAME, foldername);
 
     //从当前上下文中加载图标资源 R.drawable.live_folder_notes。然后，将这个图标资源作为附加资源添加到 liveFolderIntent 中
+    
     ShortcutIconResource foldericon = Intent.ShortcutIconResource.fromContext(this, R.drawable.live_folder_notes);
     liveFolderIntent.putExtra(LiveFolders.EXTRA_LIVE_FOLDER_ICON, foldericon);
     liveFolderIntent.putExtra(LiveFolders.EXTRA_LIVE_FOLDER_DISPLAY_MODE, LiveFolders.DISPLAY_MODE_LIST)
