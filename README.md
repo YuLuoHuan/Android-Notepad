@@ -4,8 +4,34 @@
 
  基础功能
 
-
 */
+
+--首先定义了四个菜单项：menu_add, menu_paste, menu_search, 和 menu_setting
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--  This is our one standard application action (creating a new note). -->
+    <item android:id="@+id/menu_add"
+          android:icon="@drawable/ic_menu_compose"
+          android:title="@string/menu_add"
+          android:alphabeticShortcut='a'
+          android:showAsAction="always" />
+    <!--  If there is currently data in the clipboard, this adds a PASTE menu item to the menu
+          so that the user can paste in the data.. -->
+    <item android:id="@+id/menu_paste"
+          android:icon="@drawable/ic_menu_compose"
+          android:title="@string/menu_paste"
+          android:alphabeticShortcut='p' />
+
+    <item android:id="@+id/menu_search"
+        android:title="@string/menu_search" />
+
+    <item android:id="@+id/menu_setting"
+        android:title="@string/menu_setting" />
+</menu>
+
+![alt text](<菜单栏2024-12-01 164617.png>)
+
 
 ##笔记列表显示时间戳
 
@@ -21,11 +47,56 @@ String[] dataColumns =
 { NotePad.Notes.COLUMN_NAME_TITLE,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE } ;
 
 
+--格式化日期：从 Cursor 中获取长整型的修改时间，使用 SimpleDateFormat 将时间格式化为 "yyyy-MM-dd HH:mm" 格式，将格式化后的时间字符串设置到对应的 TextView 上
+adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+    @Override
+    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+        if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
+            long modificationTime = cursor.getLong(columnIndex);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String formattedTime = sdf.format(new Date(modificationTime));
+            ((TextView) view).setText(formattedTime);
+            return true;
+        }
+        return false;
+    }
+});
+
+
+--设置时间戳的位置
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dip"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/text_modification_date"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingRight="5dip"
+        android:text="aaa"/>
+
+</LinearLayout>
+
+![alt text](<时间戳 2024-12-01 160013.png>)
+
 
 
 ##笔记内容搜索功能
 
-onCreate 方法是活动的生命周期方法之一，在活动创建时调用，并利用setContentView(R.layout.activity_search) 设置当前活动的布局文件为 activity_search，findViewById 方法用于获取布局文件中的视图组件。
+onCreate在活动创建时调用，并利用setContentView(R.layout.activity_search) 设置当前活动的布局文件为 activity_search，findViewById 方法用于获取布局文件中的视图组件。
 
 --设置搜索框的监听器
 OnEditorActionListener，当用户在搜索框中按下回车键时触发，如果按下的是回车键（EditorInfo.IME_ACTION_SEARCH），则获取搜索框中的文本
@@ -36,22 +107,120 @@ OnEditorActionListener，当用户在搜索框中按下回车键时触发，如�
 --设置适配器并绑定数据到列表视图
 使用一个 SimpleCursorAdapter 来将数据绑定到 ListView 的每一项
 
+具体实现代码如下：
+public class SearchActivity extends Activity {
+
+    private static final String[] PROJECTION = new String[]{
+            NotePad.Notes._ID,
+            NotePad.Notes.COLUMN_NAME_TITLE,
+            NotePad.Notes.COLUMN_NAME_NOTE,
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
+    };
+
+    private EditText editText;
+    private ListView listView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+
+        editText = findViewById(R.id.editText);
+        listView = findViewById(R.id.listView);
 
 
+        Intent intent = getIntent();
+        if (intent.getData() == null) {
+            intent.setData(NotePad.Notes.CONTENT_URI);
+        }
+
+        // 搜索框 回车搜索
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String searchText = editText.getText().toString();
+
+                    // 通过标题或内容包含搜索内容来筛选笔记
+                    String selection = NotePad.Notes.COLUMN_NAME_TITLE + " LIKE '%" + searchText + "%'" +
+                            " OR " + NotePad.Notes.COLUMN_NAME_NOTE + " LIKE '%" + searchText + "%'";
+
+                    Cursor cursor = managedQuery(
+                            getIntent().getData(),
+                            PROJECTION,
+                            selection,
+                            null,
+                            NotePad.Notes.DEFAULT_SORT_ORDER
+                    );
+
+                    SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                            SearchActivity.this,
+                            R.layout.noteslist_item,
+                            cursor,
+                            new String[] { NotePad.Notes.COLUMN_NAME_TITLE, NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE },
+                            new int[] { android.R.id.text1, R.id.text_modification_date }
+                    );
+                    adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+                        @Override
+                        public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                            if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
+                                long modificationTime = cursor.getLong(columnIndex);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String formattedTime = sdf.format(new Date(modificationTime));
+                                ((TextView) view).setText(formattedTime);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+                    listView.setAdapter(adapter);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+}
+
+![alt text](<搜索 2024-12-01 160334.png>)
 
 
 /*
 
- 拓展功能：UI美化：改变文字颜色、选择背景图片
+ 拓展功能：改变文字颜色、更改背景
 
 
 */
 
-##改变文字颜色
+##改变文本颜色
 
 根据点击的颜色块的ID（通过view.getId()获取），将对应的颜色值赋值给临时变量selectedColor，并且保存颜色值到SharedPreferences
 使用Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();显示一个短暂的提示信息，告知用户设置成功
 
+ public void onColorClick(View view) {
+        int id = view.getId();
+        if (id == R.id.viewBlue) {
+            selectedColor = getResources().getColor(android.R.color.holo_blue_light);
+        } else if (id == R.id.viewGreen) {
+            selectedColor = getResources().getColor(android.R.color.holo_green_light);
+        } else if (id == R.id.viewOrange) {
+            selectedColor = getResources().getColor(android.R.color.holo_orange_light);
+        } else if (id == R.id.viewRed) {
+            selectedColor = getResources().getColor(android.R.color.holo_red_light);
+        } else if (id == R.id.viewBlack) {
+            selectedColor = getResources().getColor(android.R.color.black);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("selectedColor", selectedColor);
+        editor.apply();
+
+        Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
+    }
+
+![alt text](<文字颜色改变 2024-12-01 161619.png>)
 
 
 ##背景图片
@@ -72,7 +241,69 @@ OnEditorActionListener，当用户在搜索框中按下回车键时触发，如�
 --对图片进行大小和尺寸的检查与调整
   getFileSize(this, selectedImageUri) 是一个自定义方法，用于获取文件大小，再通过 selectedImageUri 获取图片的URI，并检查其大小是否超过5MB。然后使用 MediaStore.Images.Media.getBitmap 从内容提供者中加载位图，计算缩放比例 (scaleFactor)，确保图片的最大边不超过700像素， Matrix 类进行图像缩放。建缩放后的位图 (Bitmap.createBitmap)
 
+ @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == SELECT_IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data!= null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri!= null) {
+                long fileSize = 0;
+                try {
+                    fileSize = getFileSize(this, selectedImageUri);
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (fileSize > 5 * 1024 * 1024) {
+                    Toast.makeText(this, "文件不能超过 5MB", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                try {
+                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                    float scaleFactor;
+                    int originalWidth = originalBitmap.getWidth();
+                    int originalHeight = originalBitmap.getHeight();
+
+                    if (originalWidth > originalHeight && originalWidth > 700) {
+                        scaleFactor = (float) 700 / originalWidth;
+                    } else if (originalHeight > originalWidth && originalHeight > 700) {
+                        scaleFactor = (float) 700 / originalHeight;
+                    } else {
+                        scaleFactor = 1;
+                    }
+
+                    Matrix matrix = new Matrix();
+                    matrix.postScale(scaleFactor, scaleFactor);
+
+                    Bitmap scaledBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true);
+
+                    saveBg(scaledBitmap);
+
+                    if (!originalBitmap.isRecycled()) {
+                        originalBitmap.recycle();
+                    }
+                    originalBitmap = null;
+
+                    if (!scaledBitmap.isRecycled()) {
+                        scaledBitmap.recycle();
+                    }
+                    scaledBitmap = null;
+
+                    Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "选择背景图片失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+![alt text](<更改背景 2024-12-01 173843.png>)
+
+
+--用LinearLayout定义了一个垂直方向的线性布局，一个编辑文本框（EditText）和一个列表视图（ListView）
   <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -98,3 +329,89 @@ OnEditorActionListener，当用户在搜索框中按下回车键时触发，如�
     </ListView>
 
 </LinearLayout>
+
+
+--创建了一个垂直排列的线性布局（LinearLayout），TextView：显示“选择颜色”的文本；Button：用于选择背景图片
+android:layout_width="wrap_content" 和 android:layout_height="wrap_content"：根据内容调整视图大小。
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择颜色"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/viewBlue"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_blue_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewGreen"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_green_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewOrange"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_orange_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewRed"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_red_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewBlack"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/black"
+            android:onClick="onColorClick"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btSelectBg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="选择图片" />
+</LinearLayout>
+
+![alt text](<设置界面  2024-12-01 164647.png>)
+
+
+参考文献：
+https://blog.csdn.net/qq_43615815/article/details/100174396
+
+https://wenku.csdn.net/answer/acqrdysksn
+
+https://www.cnblogs.com/zwqiao/p/14805054.html
+
+https://blog.csdn.net/yudajun/article/details/7939552
