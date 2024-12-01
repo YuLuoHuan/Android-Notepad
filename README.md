@@ -1,12 +1,13 @@
 # Android notepad
 
+
 /*
 
- 基础功能
+基础功能
 
 */
 
---首先定义了四个菜单项：menu_add, menu_paste, menu_search, 和 menu_setting
+1.首先定义了四个菜单项：menu_add, menu_paste, menu_search, 和 menu_setting
 
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
@@ -33,7 +34,9 @@
 ![菜单栏2024-12-01 164617](https://github.com/user-attachments/assets/010e7ba0-29a0-4921-bb10-22a9201ba8e8)
 
 
-##笔记列表显示时间戳
+
+
+2.笔记列表显示时间戳
 
 private static final String[] PROJECTION = new String[] {
 NotePad.Notes._ID, // 0
@@ -96,7 +99,7 @@ adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
 
 
-##笔记内容搜索功能
+3.笔记内容搜索功能
 
 onCreate在活动创建时调用，并利用setContentView(R.layout.activity_search) 设置当前活动的布局文件为 activity_search，findViewById 方法用于获取布局文件中的视图组件。
 
@@ -186,6 +189,7 @@ public class SearchActivity extends Activity {
         });
     }
 }
+
 
 ![搜索 2024-12-01 160334](https://github.com/user-attachments/assets/edcb0606-b5a3-43ac-a02b-ace3c6fbc96a)
 
