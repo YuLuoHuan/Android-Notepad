@@ -30,7 +30,7 @@
         android:title="@string/menu_setting" />
 </menu>
 
-![alt text](<菜单栏2024-12-01 164617.png>)
+![菜单栏2024-12-01 164617](https://github.com/user-attachments/assets/010e7ba0-29a0-4921-bb10-22a9201ba8e8)
 
 
 ##笔记列表显示时间戳
@@ -90,7 +90,7 @@ adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
 </LinearLayout>
 
-![alt text](<时间戳 2024-12-01 160013.png>)
+![时间戳 2024-12-01 160013](https://github.com/user-attachments/assets/c56ec0ec-142d-417b-bddc-3dd68d0b2d98)
 
 
 
@@ -184,7 +184,7 @@ public class SearchActivity extends Activity {
     }
 }
 
-![alt text](<搜索 2024-12-01 160334.png>)
+![搜索 2024-12-01 160334](https://github.com/user-attachments/assets/edcb0606-b5a3-43ac-a02b-ace3c6fbc96a)
 
 
 /*
@@ -220,7 +220,7 @@ public class SearchActivity extends Activity {
         Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
     }
 
-![alt text](<文字颜色改变 2024-12-01 161619.png>)
+![文字颜色改变 2024-12-01 161619](https://github.com/user-attachments/assets/a28e9b51-5aa7-4baf-bc49-b01537b2f879)
 
 
 ##背景图片
@@ -300,7 +300,7 @@ public class SearchActivity extends Activity {
         }
     }
 
-![alt text](<更改背景 2024-12-01 173843.png>)
+![更改背景 2024-12-01 173843](https://github.com/user-attachments/assets/561a3c88-96c7-49e7-8ba9-44f2a09bd4a1)
 
 
 --用LinearLayout定义了一个垂直方向的线性布局，一个编辑文本框（EditText）和一个列表视图（ListView）
@@ -404,7 +404,7 @@ android:layout_width="wrap_content" 和 android:layout_height="wrap_content"：�
         android:text="选择图片" />
 </LinearLayout>
 
-![alt text](<设置界面  2024-12-01 164647.png>)
+![设置界面  2024-12-01 164647](https://github.com/user-attachments/assets/308e2542-07b5-42c1-8bc3-faeb462526f0)
 
 
 参考文献：
