@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择颜色"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/viewBlue"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_blue_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewGreen"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_green_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewOrange"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_orange_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewRed"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_red_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewBlack"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/black"
+            android:onClick="onColorClick"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btSelectBg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="选择图片" />
+</LinearLayout>
