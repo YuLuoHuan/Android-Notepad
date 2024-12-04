@@ -213,6 +213,112 @@ public class SearchActivity extends Activity {
 
 */
 
+--用LinearLayout定义了一个垂直方向的线性布局，一个编辑文本框（EditText）和一个列表视图（ListView）
+  <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchActivity"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search title or content"
+        android:imeOptions="actionSearch"
+        android:inputType="text" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
+</LinearLayout>
+
+
+--创建了一个垂直排列的线性布局（LinearLayout），TextView：显示“选择颜色”的文本；Button：用于选择背景图片
+android:layout_width="wrap_content" 和 android:layout_height="wrap_content"：根据内容调整视图大小。
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择颜色"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/viewBlue"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_blue_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewGreen"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_green_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewOrange"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_orange_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewRed"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/holo_red_light"
+            android:onClick="onColorClick"/>
+
+        <View
+            android:id="@+id/viewBlack"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/black"
+            android:onClick="onColorClick"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btSelectBg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="选择图片" />
+</LinearLayout>
+
+![设置界面  2024-12-01 164647](https://github.com/user-attachments/assets/308e2542-07b5-42c1-8bc3-faeb462526f0)
+
+
+
+
 ##改变文本颜色
 
 根据点击的颜色块的ID（通过view.getId()获取），将对应的颜色值赋值给临时变量selectedColor，并且保存颜色值到SharedPreferences
@@ -347,110 +453,11 @@ public class SearchActivity extends Activity {
         }
     }
 
+    
+![屏幕截图 2024-12-04 203727](https://github.com/user-attachments/assets/63a9da46-1c59-437d-9051-a0ca21aa433d)
+
 ![更改背景 2024-12-01 173843](https://github.com/user-attachments/assets/561a3c88-96c7-49e7-8ba9-44f2a09bd4a1)
 
 
---用LinearLayout定义了一个垂直方向的线性布局，一个编辑文本框（EditText）和一个列表视图（ListView）
-  <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SearchActivity"
-    android:orientation="vertical">
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search title or content"
-        android:imeOptions="actionSearch"
-        android:inputType="text" />
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
-
-</LinearLayout>
-
-
---创建了一个垂直排列的线性布局（LinearLayout），TextView：显示“选择颜色”的文本；Button：用于选择背景图片
-android:layout_width="wrap_content" 和 android:layout_height="wrap_content"：根据内容调整视图大小。
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SettingActivity"
-    android:orientation="vertical"
-    android:padding="10dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择颜色"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/viewBlue"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_blue_light"
-            android:onClick="onColorClick"/>
-
-        <View
-            android:id="@+id/viewGreen"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@android:color/holo_green_light"
-            android:onClick="onColorClick"/>
-
-        <View
-            android:id="@+id/viewOrange"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@android:color/holo_orange_light"
-            android:onClick="onColorClick"/>
-
-        <View
-            android:id="@+id/viewRed"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@android:color/holo_red_light"
-            android:onClick="onColorClick"/>
-
-        <View
-            android:id="@+id/viewBlack"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@android:color/black"
-            android:onClick="onColorClick"/>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btSelectBg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="选择图片" />
-</LinearLayout>
-
-![设置界面  2024-12-01 164647](https://github.com/user-attachments/assets/308e2542-07b5-42c1-8bc3-faeb462526f0)
 
 
