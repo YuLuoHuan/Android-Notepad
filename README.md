@@ -53,6 +53,18 @@ String[] dataColumns =
 
 --格式化日期：从 Cursor 中获取长整型的修改时间，使用 SimpleDateFormat 将时间格式化为 "yyyy-MM-dd HH:mm" 格式，将格式化后的时间字符串设置到对应的 TextView 上
 
+ int[] viewIDs = { android.R.id.text1, R.id.text_modification_date };
+
+        // Creates the backing adapter for the ListView.
+        SimpleCursorAdapter adapter
+            = new SimpleCursorAdapter(
+                      this,                             // The Context for the ListView
+                      R.layout.noteslist_item,          // Points to the XML for a list item
+                      cursor,                           // The cursor to get items from
+                      dataColumns,
+                      viewIDs
+              );
+
 adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -205,6 +217,32 @@ public class SearchActivity extends Activity {
 
 根据点击的颜色块的ID（通过view.getId()获取），将对应的颜色值赋值给临时变量selectedColor，并且保存颜色值到SharedPreferences
 使用Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();显示一个短暂的提示信息，告知用户设置成功
+
+    private static final int SELECT_IMAGE_REQUEST_CODE = 1;
+
+    private SharedPreferences sharedPreferences;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setting);
+
+        sharedPreferences = getSharedPreferences("setting", MODE_PRIVATE);
+
+        // 获取上一次保存的颜色值，如果没有则默认为黑色
+        selectedColor = sharedPreferences.getInt("selectedColor", Color.BLACK);
+
+
+
+        findViewById(R.id.btSelectBg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, SELECT_IMAGE_REQUEST_CODE);
+            }
+        });
+    }
 
  public void onColorClick(View view) {
         int id = view.getId();
@@ -416,11 +454,3 @@ android:layout_width="wrap_content" 和 android:layout_height="wrap_content"：�
 ![设置界面  2024-12-01 164647](https://github.com/user-attachments/assets/308e2542-07b5-42c1-8bc3-faeb462526f0)
 
 
-参考文献：
-https://blog.csdn.net/qq_43615815/article/details/100174396
-
-https://wenku.csdn.net/answer/acqrdysksn
-
-https://www.cnblogs.com/zwqiao/p/14805054.html
-
-https://blog.csdn.net/yudajun/article/details/7939552
